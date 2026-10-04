@@ -310,41 +310,71 @@ function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').repla
 function qa(s){ return esc(q(s)); }
 function q(s){ return (s||'').replace(/'/g,"\\'"); }
 
-/* ═════════ 저장 ═════════ */
-function setStore(ok){
-  canStore = ok;
+/* ═════════ 저장 ═════════
+   MODE 'claude' : Claude 환경의 window.storage
+        'local'  : 일반 브라우저 localStorage (웹 게시본의 기본 경로)
+        'none'   : 저장 불가 — 화면에서만 동작, JSON 백업 안내
+──────────────────────────────────────────────────────── */
+var MODE = 'none';
+
+function setStore(mode){
+  MODE = mode;
+  canStore = (mode !== 'none');
   var st = document.getElementById('storeStat');
-  if(st) st.innerHTML = ok ? '자동저장 <b>사용</b>' : '자동저장 <b>불가</b>';
+  if(st) st.innerHTML = canStore ? '자동저장 <b>사용</b>' : '자동저장 <b>불가</b>';
   var bar = document.getElementById('warnBar');
-  if(bar) bar.style.display = ok ? 'none' : 'block';
+  if(bar) bar.style.display = canStore ? 'none' : 'block';
 }
+
 async function probeStorage(){
-  if(!window.storage || typeof window.storage.set !== 'function') return false;
-  try{ await window.storage.set('chagoklog_probe', '1', false); return true; }
-  catch(e){ return false; }
-}
-async function load(){
-  var ok = await probeStorage();
-  setStore(ok);
-  if(ok){
-    try{
-      var r = await window.storage.get(KEY, false);
-      if(r && r.value) DB = JSON.parse(r.value);
-    }catch(e){ /* 최초 실행 — 저장된 값 없음 */ }
+  // 1순위 — Claude 환경
+  if(window.storage && typeof window.storage.set === 'function'){
+    try{ await window.storage.set('chagoklog_probe', '1', false); return 'claude'; }
+    catch(e){ /* 다음 경로로 */ }
   }
+  // 2순위 — 일반 브라우저
+  try{
+    localStorage.setItem('chagoklog_probe', '1');
+    localStorage.removeItem('chagoklog_probe');
+    return 'local';
+  }catch(e){ return 'none'; }
+}
+
+async function readStore(){
+  if(MODE === 'claude'){
+    var r = await window.storage.get(KEY, false);
+    return (r && r.value) ? r.value : null;
+  }
+  if(MODE === 'local') return localStorage.getItem(KEY);
+  return null;
+}
+
+function writeStore(text){
+  if(MODE === 'claude') return window.storage.set(KEY, text, false);
+  if(MODE === 'local'){ localStorage.setItem(KEY, text); return Promise.resolve(); }
+  return Promise.reject(new Error('no store'));
+}
+
+async function load(){
+  setStore(await probeStorage());
+  try{
+    var v = await readStore();
+    if(v) DB = JSON.parse(v);
+  }catch(e){ /* 최초 실행 — 저장된 값 없음 */ }
   if(!DB.logs) DB.logs = [];
   if(!DB.tasks) DB.tasks = {};
   if(!DB.cycle) DB.cycle = {};
   restoreCycle(true); refresh();
 }
+
 function save(){
   if(!canStore) return;
   clearTimeout(saveTimer);
   saveTimer = setTimeout(function(){
     Promise.resolve()
-      .then(function(){ return window.storage.set(KEY, JSON.stringify(DB), false); })
+      .then(function(){ return writeStore(JSON.stringify(DB)); })
       .catch(function(){
-        setStore(false);
+        setStore('none');
         if(!warned){ warned = true; toast('자동저장 불가 — 데이터 탭에서 JSON 백업을 사용하십시오'); }
       });
   }, 400);
@@ -704,7 +734,9 @@ function refresh(){
     Object.keys(DB.tasks).map(function(n){ return '<option value="'+esc(n)+'">'; }).join('');
   document.getElementById('dataStat').textContent =
     '기록 ' + DB.logs.length + '건 · 과제 ' + Object.keys(DB.tasks).length + '건'
-    + (canStore ? ' · 자동저장 사용' : ' · 자동저장 불가(JSON 백업 필요)');
+    + (MODE === 'local' ? ' · 이 브라우저에 자동저장됨'
+      : MODE === 'claude' ? ' · 자동저장 사용'
+      : ' · 자동저장 불가(JSON 백업 필요)');
 }
 document.querySelectorAll('.tab').forEach(function(b){
   b.onclick = function(){
