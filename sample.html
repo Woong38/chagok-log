@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>주요 추진 실적 및 계획 | 2026-07-20 ~ 2026-08-14</title>
+<style>
+:root{
+  --navy:#0A1E3F; --navy-deep:#061229;
+  --paper:#F5F4EF; --card:#FFFFFF;
+  --ink:#16202C; --ink2:#5A6472;
+  --hair:#DAD7CD; --hair-soft:#E9E7DF;
+  --gold:#96793B; --gold-soft:#B49759;
+  --alert:#A6192E;
+  --mark:#FBE9C2; --mark-line:#D9A93F;
+  --serif:Georgia,"Times New Roman","Batang","바탕",serif;
+  --sans:"Helvetica Neue",Helvetica,Arial,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --mono:"SF Mono",Consolas,"D2Coding",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+     font-size:13px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1360px;margin:0 auto;padding:28px 18px 54px}
+.doc{background:var(--card);border:1px solid var(--hair)}
+
+/* ── 마스트헤드 ── */
+.mast{background:var(--navy);color:#fff;padding:22px 34px 20px;position:relative}
+.mast::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
+  background:linear-gradient(90deg,var(--gold) 0 120px,rgba(150,121,59,.25) 120px 100%)}
+.mast .eyebrow{font-family:var(--mono);font-size:9.5px;letter-spacing:.3em;
+  color:var(--gold-soft);text-transform:uppercase;margin-bottom:8px}
+.mast h1{font-family:var(--serif);font-size:28px;font-weight:400;margin:0;letter-spacing:.02em}
+.mast .sub{font-size:12px;color:#8FA0BC;margin-top:6px}
+.classif{background:var(--navy-deep);color:#6E82A3;font-family:var(--mono);font-size:9px;
+  letter-spacing:.22em;text-transform:uppercase;padding:7px 34px;display:flex;
+  justify-content:space-between;gap:14px;flex-wrap:wrap}
+
+/* ── 2단 그리드 ── */
+.cols{display:grid;grid-template-columns:1fr 1fr}
+.col{padding:0 0 26px}
+.col:first-child{border-right:1px solid var(--hair)}
+.colhead{padding:13px 30px 11px;border-bottom:2px solid var(--navy);background:#FAF9F5}
+.colhead .t{font-size:15px;font-weight:700;letter-spacing:.02em}
+.colhead .p{font-family:var(--mono);font-size:11.5px;color:var(--ink2);margin-top:2px;
+  font-variant-numeric:tabular-nums}
+
+/* ── 업무 블록 ── */
+.item{padding:16px 30px 4px;border-bottom:1px solid var(--hair-soft)}
+.item:last-child{border-bottom:0}
+.ttl{display:flex;gap:8px;align-items:baseline;margin-bottom:9px}
+.no{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--ink2);flex:none}
+.name{font-size:13.5px;font-weight:700;line-height:1.45}
+.name .hl{background:linear-gradient(transparent 58%, var(--mark) 58%);
+  box-shadow:inset 0 -1px 0 var(--mark-line);padding:0 1px}
+.name .cont{color:var(--alert);font-weight:700}
+.owner{font-weight:400;font-size:12px;color:var(--ink2);white-space:nowrap}
+
+/* ── 계층 ── */
+.sec{margin:9px 0 3px;font-size:12.5px;font-weight:600;color:var(--ink)}
+.sec::before{content:"– ";color:var(--gold);font-weight:700}
+.sec .inline{font-weight:400;color:var(--ink2)}
+ul{list-style:none;margin:0;padding:0}
+.l1{padding-left:15px;position:relative;margin:2px 0;font-size:12.5px}
+.l1::before{content:"○";position:absolute;left:0;top:0;color:var(--ink2);font-size:9px;line-height:1.9}
+.l2{padding-left:15px;position:relative;margin:1px 0;font-size:12px;color:var(--ink2)}
+.l2::before{content:"·";position:absolute;left:2px;top:-1px;color:var(--gold);font-weight:700}
+.arw{padding-left:15px;position:relative;margin:2px 0;font-size:12px;color:var(--ink2)}
+.arw::before{content:"→";position:absolute;left:0;color:var(--gold)}
+.due{margin:9px 0 2px;font-size:12.5px;font-weight:600}
+.due::before{content:"– ";color:var(--gold);font-weight:700}
+.due b{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--alert)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* ── 삽입 표 ── */
+.tbl-cap{margin:8px 0 3px 15px;font-size:11.5px;font-weight:600;color:var(--ink2)}
+table{border-collapse:collapse;font-size:11.5px;margin:0 0 6px 15px;border-top:1.5px solid var(--navy)}
+th,td{border:1px solid var(--hair);padding:4px 10px;text-align:center;
+  font-family:var(--mono);font-variant-numeric:tabular-nums}
+th{background:#FAF9F5;font-weight:600;color:var(--ink2);font-size:10.5px;letter-spacing:.02em}
+td.neg{color:var(--alert);font-weight:700}
+td.lbl{font-family:var(--sans);font-weight:600;background:#FCFBF8}
+
+/* ── 각주 ── */
+.foot{padding:16px 34px 22px;background:#FAF9F5;border-top:2px solid var(--navy)}
+.foot .cap{font-family:var(--mono);font-size:9px;letter-spacing:.24em;color:var(--gold);
+  text-transform:uppercase;margin-bottom:8px}
+.foot p{margin:0 0 4px;font-size:11px;color:var(--ink2)}
+.foot b{color:var(--ink)}
+
+@media (max-width:900px){
+  .wrap{padding:0}.doc{border:0}
+  .mast{padding:18px 18px 15px}.mast h1{font-size:21px}
+  .classif{padding:6px 18px}
+  .cols{grid-template-columns:1fr}
+  .col:first-child{border-right:0;border-bottom:2px solid var(--navy)}
+  .colhead,.item{padding-left:18px;padding-right:18px}
+  .foot{padding:14px 18px 20px}
+}
+@media print{
+  body{background:#fff}.wrap{padding:0;max-width:none}.doc{border:0}
+  .mast{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .item{break-inside:avoid}
+  @page{size:A4 landscape;margin:10mm}
+}
+</style>
+</head>
+<body>
+<div class="wrap"><div class="doc">
+
+  <div class="mast">
+    <div class="eyebrow">Risk Management &middot; Biweekly Work Report</div>
+    <h1>주요 추진 실적 및 계획</h1>
+    <div class="sub">리스크관리부 시장리스크팀 &middot; 격주 주간업무</div>
+  </div>
+  <div class="classif">
+    <span>Internal Use Only</span>
+    <span>Confirmed / 제출완료</span>
+  </div>
+
+  <div class="cols">
+
+    <!-- ══════════ 좌 : 추진실적 ══════════ -->
+    <div class="col">
+      <div class="colhead">
+        <div class="t">추진실적</div>
+        <div class="p">2026-08-03 ~ 2026-08-14</div>
+      </div>
+
+      <div class="item">
+        <div class="ttl">
+          <span class="no">1.</span>
+          <span class="name"><span class="hl">업무 매뉴얼 개정</span>
+            <span class="owner">[홍길동, 김영희]</span></span>
+        </div>
+        <div class="sec">배경</div>
+        <ul>
+          <li class="l1">조직개편에 따른 업무분장 변경 반영 필요</li>
+          <li class="l2">현행 매뉴얼 최종 개정 후 3년 경과</li>
+        </ul>
+        <div class="sec">주요내용</div>
+        <ul>
+          <li class="l1">개정 항목 12건 도출, 대상 조문 확인</li>
+          <li class="l1">초안 검토 회의 2회 개최, 개정 범위 확정</li>
+          <li class="l2">유관부서 의견조회 착수(4개 부서)</li>
+        </ul>
+        <div class="tbl-cap">[부서별 의견회신 현황]</div>
+        <table>
+          <thead><tr><th>구분</th><th>대상</th><th>회신</th><th>미회신</th></tr></thead>
+          <tbody><tr><td class="lbl">부서 수</td><td>4</td><td>2</td><td class="neg">2</td></tr></tbody>
+        </table>
+        <ul>
+          <li class="arw">미회신 부서 독촉 후 차주 개정안 확정 예정</li>
+        </ul>
+        <div class="due">완료(예정)일: <b>9.18(금)</b></div>
+      </div>
+
+      <div class="item">
+        <div class="ttl">
+          <span class="no">2.</span>
+          <span class="name">정기점검 결과 정리
+            <span class="owner">[박민수]</span></span>
+        </div>
+        <div class="sec">주요내용</div>
+        <ul>
+          <li class="l1">점검표 8종 취합, 결과보고서 1건 제출</li>
+        </ul>
+        <div class="due">완료일: <b>8.10(월)</b></div>
+      </div>
+
+      <div class="item">
+        <div class="ttl">
+          <span class="no">3.</span>
+          <span class="name">상반기 실적자료 취합·보고
+            <span class="owner">[박민수]</span></span>
+        </div>
+        <div class="sec">주요내용</div>
+        <ul>
+          <li class="l1">12개 항목 취합 완료, 보고서 1건 제출</li>
+        </ul>
+        <div class="due">완료일: <b>8.6(목)</b></div>
+      </div>
+    </div>
+
+    <!-- ══════════ 우 : 추진계획 ══════════ -->
+    <div class="col">
+      <div class="colhead">
+        <div class="t">추진계획</div>
+        <div class="p">2026-08-17 ~ 2026-08-28</div>
+      </div>
+
+      <div class="item">
+        <div class="ttl">
+          <span class="no">1.</span>
+          <span class="name"><span class="hl">업무 매뉴얼 개정</span><span class="cont">(계속)</span>
+            <span class="owner">[홍길동, 김영희]</span></span>
+        </div>
+        <div class="sec">배경</div>
+        <ul>
+          <li class="l1">조직개편에 따른 업무분장 변경 반영 필요</li>
+        </ul>
+        <div class="sec">주요내용</div>
+        <ul>
+          <li class="l1">의견조회 결과 반영 및 개정안 확정</li>
+          <li class="l2">시행일 확정 및 전직원 공지</li>
+        </ul>
+        <div class="due">진행사항: <span class="inline">1차 검토회의 <b>8.14(금)</b></span></div>
+        <div class="due">완료(예정)일: <b>9.18(금)</b></div>
+      </div>
+
+      <div class="item">
+        <div class="ttl">
+          <span class="no">2.</span>
+          <span class="name">신규 시스템 사용자 교육<span class="cont">(계속)</span>
+            <span class="owner">[김영희]</span></span>
+        </div>
+        <div class="sec">배경</div>
+        <ul>
+          <li class="l1">차세대 시스템 전환에 따른 전 직원 사용자 교육 시행</li>
+        </ul>
+        <div class="sec">주요내용</div>
+        <ul>
+          <li class="l1">2차 교육 실시 및 이수현황 집계</li>
+          <li class="l2">미이수자 보충 일정 별도 안내</li>
+        </ul>
+        <div class="due">완료(예정)일: <b>8.28(금)</b></div>
+      </div>
+
+      <div class="item">
+        <div class="ttl">
+          <span class="no">3.</span>
+          <span class="name">하반기 교육계획 수립
+            <span class="owner">[김영희]</span></span>
+        </div>
+        <div class="sec">주요내용</div>
+        <ul>
+          <li class="l1">대상·과정 편성 및 시행 일정 확정</li>
+        </ul>
+        <div class="due">완료(예정)일: <b>8.28(금)</b></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="cap">Notes</div>
+    <p><b>표기</b> — 계층기호 `–` 구분항목 / `○` 세부내용 / `·` 부연, 완료(예정)일은 `M.D(요일)` 약식</p>
+    <p><b>계속 과제</b> — 직전 회차에서 이어지는 과제는 업무명 뒤 (계속) 표기, 핵심 과제는 형광 표시</p>
+    <p style="color:#9BA3AE">※ 본 화면은 양식 확인용 샘플임 — 실제 생성 시 전 항목 교체</p>
+  </div>
+
+</div></div>
+</body>
+</html>

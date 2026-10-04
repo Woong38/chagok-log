@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>차곡Log — 일별 업무기록 기반 주간보고 자동조립 Tool</title>
+<meta name="description" content="하루 30초 기록을 쌓아 격주 주간보고를 자동 조립하는 도구">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --dark:#544C40; --dark2:#6B6155; --dark-deep:#3D372E;
+  --paper:#FAF7EF; --card:#FFFFFF;
+  --ink:#3A342B; --ink2:#6E675B; --ink3:#A69D8C;
+  --hair:#E6DFCF; --hair-soft:#F1ECE0;
+  --y:#FFBC00; --y-mid:#E0A700; --y-deep:#A8801A; --mark:#FFEFBE;
+  --alert:#B5622C;
+  --serif:'Gowun Batang',Georgia,"Batang",serif;
+  --sans:'Gowun Dodum',"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --mono:'IBM Plex Mono',Consolas,"D2Coding",monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+     font-size:14px;line-height:1.75;-webkit-font-smoothing:antialiased}
+.wrap{max-width:980px;margin:0 auto;padding:0 20px 80px}
+
+/* ── 표지 ── */
+.mast{background:var(--dark);color:#fff;margin:0 -20px;padding:46px 46px 40px;position:relative}
+.mast::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;
+  background:linear-gradient(90deg,var(--y) 0 150px,rgba(255,188,0,.25) 150px 100%)}
+.mast .eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.32em;color:var(--y);
+  text-transform:uppercase;margin-bottom:14px}
+.mast h1{font-family:var(--serif);font-size:46px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+.mast h1 em{font-style:normal;color:var(--y)}
+.mast .tag{font-size:17px;color:#C9BFA8;margin-top:12px}
+.mast .sub{font-size:13.5px;color:#A79E8C;margin-top:20px;max-width:620px;line-height:1.8}
+
+/* ── 지표 ── */
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--hair);
+  background:#fff;margin-top:30px}
+.metrics div{padding:18px 22px;border-right:1px solid var(--hair-soft)}
+.metrics div:last-child{border-right:0}
+.metrics .v{font-family:var(--mono);font-size:24px;color:var(--y-deep);font-weight:500}
+.metrics .l{font-size:12.5px;color:var(--ink2);margin-top:3px}
+
+/* ── 섹션 ── */
+section{margin-top:52px}
+.eyeb{font-family:var(--mono);font-size:10px;letter-spacing:.26em;color:var(--y-deep);text-transform:uppercase}
+h2{font-family:var(--serif);font-size:25px;font-weight:700;color:var(--dark);margin:5px 0 6px}
+.lede{font-size:14.5px;color:var(--ink2);max-width:700px;margin-bottom:22px}
+
+/* ── 카드 ── */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.c{display:block;background:#fff;border:1px solid var(--hair);padding:22px 24px;
+  text-decoration:none;color:inherit;transition:border-color .15s,transform .15s;position:relative}
+.c:hover{border-color:var(--y-mid);transform:translateY(-2px)}
+.c .n{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--y-deep)}
+.c h3{font-family:var(--serif);font-size:19px;font-weight:700;color:var(--dark);margin:6px 0 7px}
+.c p{font-size:13.5px;color:var(--ink2);line-height:1.7}
+.c .go{font-family:var(--mono);font-size:11.5px;color:var(--y-deep);margin-top:12px;display:inline-block}
+.c.main{grid-column:1/-1;border-left:4px solid var(--y);background:linear-gradient(180deg,#FFFDF7,#fff)}
+.c.main h3{font-size:22px}
+
+/* ── 흐름 ── */
+.flow{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--hair);background:#fff}
+.flow div{padding:18px 22px;border-right:1px solid var(--hair-soft);position:relative}
+.flow div:last-child{border-right:0}
+.flow .s{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--y-deep)}
+.flow .t{font-weight:700;font-size:15px;margin-top:4px}
+.flow .d{font-size:13px;color:var(--ink2);margin-top:3px}
+.flow .f{position:absolute;right:20px;top:17px;font-family:var(--mono);font-size:10px;
+  border:1px solid var(--y-mid);color:var(--y-deep);padding:1px 8px;border-radius:20px}
+
+/* ── 본문 목록 ── */
+ul.pt{list-style:none;border-top:2px solid var(--dark);margin-top:8px}
+ul.pt li{display:flex;gap:16px;padding:13px 0;border-bottom:1px solid var(--hair-soft)}
+ul.pt li b{flex:none;width:24px;height:24px;background:var(--y);color:var(--dark-deep);
+  border-radius:50%;font-family:var(--mono);font-size:11.5px;display:flex;
+  align-items:center;justify-content:center;font-weight:700;margin-top:2px}
+ul.pt li div{font-size:13.5px;color:var(--ink2);line-height:1.7}
+ul.pt li div i{font-style:normal;color:var(--ink);font-weight:700}
+
+.shot{margin-top:22px;border:1px solid var(--hair);background:#fff;padding:10px}
+.shot img{width:100%;display:block}
+.cap{font-size:12px;color:var(--ink3);margin-top:8px;text-align:center}
+
+.note{margin-top:22px;padding:14px 18px;background:#FCF9F1;border-left:3px solid var(--y-mid);
+  font-size:13px;color:var(--ink2);line-height:1.75}
+
+.foot{margin-top:60px;padding:22px 0 0;border-top:2px solid var(--dark);
+  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.foot p{font-family:var(--mono);font-size:11px;color:var(--ink2);letter-spacing:.05em}
+
+@media (max-width:760px){
+  .mast{padding:32px 20px 28px}
+  .mast h1{font-size:33px}
+  .metrics,.flow,.cards{grid-template-columns:1fr}
+  .metrics div,.flow div{border-right:0;border-bottom:1px solid var(--hair-soft)}
+  .metrics div:last-child,.flow div:last-child{border-bottom:0}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="mast">
+    <div class="eyebrow">Work Report Automation</div>
+    <h1>차곡<em>Log</em></h1>
+    <div class="tag">차곡차곡 쌓아, 마감날 한 번에</div>
+    <div class="sub">일별 업무기록을 쌓아 격주 주간보고(「주요 추진 실적 및 계획」)를
+      좌·우 2단 양식으로 자동 조립하는 도구다. 설치가 필요 없고, 기록은 브라우저에만 저장된다.</div>
+  </div>
+
+  <div class="metrics">
+    <div><div class="v">30초</div><div class="l">하루 기록 시간</div></div>
+    <div><div class="v">30분 → 10분</div><div class="l">회차 마감 소요</div></div>
+    <div><div class="v">0</div><div class="l">설치·서버·계정</div></div>
+  </div>
+
+  <!-- ══ 바로 쓰기 ══ -->
+  <section>
+    <div class="eyeb">Start</div>
+    <h2>바로 쓰기</h2>
+    <p class="lede">아래 도구를 열고 ③ 보고서 생성 탭에서 「회차 자동설정」을 누르면 바로 시작한다.</p>
+    <div class="cards">
+      <a class="c main" href="tool.html">
+        <div class="n">Tool</div>
+        <h3>차곡Log 실사용 도구</h3>
+        <p>일별 기록 입력 → 과제별 배경·담당자 등록 → 마감일 2단 보고서 자동 생성.
+          사내 시스템에 붙여넣을 텍스트까지 한 번에 뽑는다.</p>
+        <span class="go">열기 →</span>
+      </a>
+      <a class="c" href="demo.html">
+        <div class="n">Demo</div>
+        <h3>실사용 시연</h3>
+        <p>입력부터 보고서 산출까지 전 과정을 자동 재생한다. 약 52초.</p>
+        <span class="go">재생 →</span>
+      </a>
+      <a class="c" href="screens.html">
+        <div class="n">Guide</div>
+        <h3>화면 안내</h3>
+        <p>4개 화면을 단계별로 설명한다. 인쇄·배포용.</p>
+        <span class="go">보기 →</span>
+      </a>
+      <a class="c" href="sample.html">
+        <div class="n">Output</div>
+        <h3>보고서 샘플</h3>
+        <p>완성된 「주요 추진 실적 및 계획」 2단 양식 예시.</p>
+        <span class="go">보기 →</span>
+      </a>
+      <a class="c" href="motion.html">
+        <div class="n">Intro</div>
+        <h3>개념 소개 모션</h3>
+        <p>도구의 작동 원리를 7개 장면으로 보여준다. 약 34초.</p>
+        <span class="go">재생 →</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ══ 쓰는 법 ══ -->
+  <section>
+    <div class="eyeb">How it works</div>
+    <h2>쓰는 법</h2>
+    <div class="flow">
+      <div><div class="s">Step 01</div><div class="t">일별 기록</div>
+        <div class="d">과제명과 한 일만 적는다</div><div class="f">매일</div></div>
+      <div><div class="s">Step 02</div><div class="t">과제 관리</div>
+        <div class="d">배경·담당자·완료예정일 등록</div><div class="f">1회</div></div>
+      <div><div class="s">Step 03</div><div class="t">보고서 생성</div>
+        <div class="d">기간 지정 → 2단 자동 조립</div><div class="f">마감일</div></div>
+    </div>
+    <div class="shot">
+      <img src="assets/demo.gif" alt="차곡Log 실사용 시연 — 입력부터 보고서 산출까지">
+      <div class="cap">입력 → 과제 등록 → 보고서 생성 → 복사까지의 실제 조작 화면</div>
+    </div>
+  </section>
+
+  <!-- ══ 자동 처리 ══ -->
+  <section>
+    <div class="eyeb">Key behaviors</div>
+    <h2>자동으로 처리되는 것</h2>
+    <ul class="pt">
+      <li><b>1</b><div><i>같은 과제 병합</i> — 2주간 여러 번 기록해도 보고서에서는 한 블록으로 합쳐진다.</div></li>
+      <li><b>2</b><div><i>좌·우 자동 배분</i> — 실적기간 기록은 좌측, 계획 등록분은 우측. 양쪽에 있으면 <code>(계속)</code>이 자동으로 붙는다.</div></li>
+      <li><b>3</b><div><i>배경 재사용</i> — 과제당 최초 1회만 등록하면 이후 모든 회차에 그대로 실린다.</div></li>
+      <li><b>4</b><div><i>날짜 변환</i> — <code>2026-09-18</code> → <code>9.18(금)</code>. 완료 상태면 「완료일」, 아니면 「완료(예정)일」로 라벨이 갈린다.</div></li>
+      <li><b>5</b><div><i>누락 점검</i> — 담당자·배경·완료예정일 미기재, 예정일 경과, 계획만 있고 기록 없는 건을 따로 뽑아준다. 보고문에는 포함되지 않는다.</div></li>
+    </ul>
+    <div class="note">
+      <b>저장 방식</b> — 기록은 사용하는 브라우저에만 저장된다. 서버로 전송되지 않으며 계정도 필요 없다.
+      다른 PC에서 이어 쓰거나 백업하려면 「데이터」 탭의 내보내기·가져오기(JSON)를 사용한다.
+    </div>
+  </section>
+
+  <div class="foot">
+    <p>차곡Log · Work Report Automation</p>
+    <p>본 페이지의 예시 데이터는 전부 가상이다</p>
+  </div>
+
+</div>
+</body>
+</html>
